@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:news/core/services/api_service.dart';
-import 'package:news/features/home/cubit/cubit/news_cubit.dart';
+import 'package:news/features/home/cubit/news/news_cubit.dart';
 
 import '../../features/home/data/repo/news_repo.dart';
 import '../../features/home/data/repo/news_repo_impl.dart';

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,10 +12,10 @@ class TopNewsItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => GoRouter.of(context).pushNamed('details', extra: news),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: InkWell(
+        onTap: () => GoRouter.of(context).pushNamed('details', extra: news),
         child: Container(
           height: 130,
           decoration: BoxDecoration(
@@ -28,11 +29,15 @@ class TopNewsItem extends StatelessWidget {
                   topLeft: Radius.circular(25),
                   bottomLeft: Radius.circular(25),
                 ),
-                child: Image.network(
-                  news.image,
+                child: CachedNetworkImage(
+                  errorWidget:
+                      (_, __, ___) => const Center(
+                        child: Icon(Icons.error, color: Colors.red),
+                      ),
                   height: 130,
                   width: 150,
                   fit: BoxFit.cover,
+                  imageUrl: news.image,
                 ),
               ),
               const SizedBox(width: 15),

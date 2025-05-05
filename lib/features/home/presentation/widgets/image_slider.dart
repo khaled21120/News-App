@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:news/features/home/data/model/news_model.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -43,16 +44,26 @@ class _ImageSliderState extends State<ImageSlider> {
               widget.news.map((news) {
                 return Builder(
                   builder: (BuildContext context) {
-                    return Container(
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(25),
-                        child: CachedNetworkImage(
-                          imageUrl: news.image,
-                          fit: BoxFit.cover,
+                    return InkWell(
+                      onTap:
+                          () => GoRouter.of(
+                            context,
+                          ).pushNamed('details', extra: news),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(25),
+                          child: CachedNetworkImage(
+                            errorWidget:
+                                (_, __, ___) => const Center(
+                                  child: Icon(Icons.error, color: Colors.red),
+                                ),
+                            imageUrl: news.image,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     );

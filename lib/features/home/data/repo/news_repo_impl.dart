@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dartz/dartz.dart';
 import 'package:intl/intl.dart';
 import 'package:news/core/utils/helper.dart';
@@ -26,7 +24,6 @@ class NewsRepoImpl extends NewsRepo {
 
     try {
       final res = await apiService.getMapData(endPoint: endPoint);
-      log(res.toString());
       final allNewsJson =
           (res['top_news'] as List)
               .expand((section) => section['news'] as List)

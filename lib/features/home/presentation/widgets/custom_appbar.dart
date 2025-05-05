@@ -14,7 +14,7 @@ class CustomAppbar extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Hello Anderson', style: MyStyle.title18(context)),
+            Text('Hello', style: MyStyle.title18(context)),
             Text('Have a nice day', style: MyStyle.regular12(context)),
           ],
         ),

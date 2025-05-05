@@ -6,11 +6,12 @@ import 'package:news/core/themes/light_theme.dart';
 import 'package:news/core/themes/text_style.dart';
 import 'package:news/features/home/data/model/news_model.dart';
 
-import '../../cubit/cubit/news_cubit.dart';
+import '../../cubit/news/news_cubit.dart';
 
 class DetailsView extends StatelessWidget {
   const DetailsView({super.key, required this.news});
   final NewsModel news;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,15 +23,15 @@ class DetailsView extends StatelessWidget {
             return Center(child: Text(state.message));
           } else if (state is NewsSuccess) {
             return CustomScrollView(
+              physics: const BouncingScrollPhysics(),
               slivers: [
-                SliverFillRemaining(
-                  child: Stack(
-                    alignment: Alignment.center,
+                SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _backgroundImage(context, image: news.image),
-                      _buttons(context),
-                      _overlay(context, news: news),
-                      _content(context, content: news.text),
+                      _topImageWithBack(context, news.image),
+                      _overlayContent(context, news),
+                      _content(context, news.text),
                     ],
                   ),
                 ),
@@ -44,114 +45,89 @@ class DetailsView extends StatelessWidget {
   }
 }
 
-Widget _buttons(BuildContext context) {
-  return Padding(
+Widget _content(BuildContext context, String content) {
+  return Container(
+    width: double.infinity,
     padding: const EdgeInsets.all(20.0),
-    child: Align(
-      alignment: Alignment.topLeft,
-      child: IconButton.filled(
-        style: IconButton.styleFrom(
-          backgroundColor: MyColors.grey,
-          minimumSize: Size(30, 30),
-        ),
-        iconSize: 20,
-        icon: const Icon(Icons.arrow_back_ios, color: MyColors.white),
-        onPressed: () {
-          GoRouter.of(context).pop();
-        },
-      ),
+    color: MyColors.black,
+    child: Text(
+      content,
+      style: MyStyle.regular12(context),
+      textDirection: TextDirection.rtl,
     ),
   );
 }
 
-Widget _content(BuildContext context, {required String content}) {
-  return Align(
-    alignment: Alignment.bottomCenter,
-    child: Container(
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height * .4,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(25),
-          topRight: Radius.circular(25),
-        ),
-        color: MyColors.black,
+Widget _topImageWithBack(BuildContext context, String image) {
+  return Stack(
+    children: [
+      CachedNetworkImage(
+        imageUrl: image,
+        width: double.infinity,
+        height: MediaQuery.of(context).size.height * 0.4,
+        fit: BoxFit.cover,
+        errorWidget:
+            (_, __, ___) =>
+                const Center(child: Icon(Icons.error, color: Colors.red)),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Text(
-            textDirection: TextDirection.rtl,
-            content,
-            style: MyStyle.regular12(context),
+      SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: IconButton.filled(
+            style: IconButton.styleFrom(
+              backgroundColor: MyColors.grey,
+              minimumSize: const Size(30, 30),
+            ),
+            iconSize: 20,
+            icon: const Icon(Icons.arrow_back_ios, color: MyColors.white),
+            onPressed: () => GoRouter.of(context).pop(),
           ),
         ),
       ),
-    ),
+    ],
   );
 }
 
-Widget _overlay(BuildContext context, {required NewsModel news}) {
-  return Align(
-    alignment: Alignment.center,
-    child: Container(
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.5,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            const Color(0xFF1E1F18).withAlpha(0),
-            MyColors.darkGrey.withValues(alpha: .9),
-            MyColors.darkGrey,
-          ],
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              textDirection: TextDirection.rtl,
-              news.title,
-              style: MyStyle.title23(context),
-            ),
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(text: 'By ', style: MyStyle.semi9(context)),
-                  TextSpan(
-                    text: news.author,
-                    style: MyStyle.regular10(context),
-                  ),
-                ],
-              ),
-            ),
-            const Divider(color: MyColors.white, thickness: .5),
-            Text(
-              'Publised on ${news.publishDate}',
-              style: MyStyle.regular10(context),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-Widget _backgroundImage(BuildContext context, {required String image}) {
-  return SizedBox(
-    height: MediaQuery.of(context).size.height,
+Widget _overlayContent(BuildContext context, NewsModel news) {
+  return Container(
     width: double.infinity,
-    child: CachedNetworkImage(
-      alignment: Alignment.topCenter,
-      imageUrl: image,
-      fit: BoxFit.contain,
-      height: MediaQuery.of(context).size.height * 0.5,
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          const Color(0xFF1E1F18).withAlpha(0),
+          MyColors.darkGrey.withValues(alpha: .9),
+          MyColors.darkGrey,
+        ],
+      ),
+    ),
+    padding: const EdgeInsets.all(20.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          news.title,
+          style: MyStyle.title23(context),
+          textDirection: TextDirection.rtl,
+        ),
+        const SizedBox(height: 10),
+        Text.rich(
+          textDirection: TextDirection.rtl,
+          TextSpan(
+            locale: const Locale('ar'),
+            children: [
+              TextSpan(text: 'المصدر: ', style: MyStyle.semi9(context)),
+              TextSpan(text: news.author, style: MyStyle.regular10(context)),
+            ],
+          ),
+        ),
+        const Divider(color: MyColors.white, thickness: 0.5),
+        Text(
+          'Published on ${news.publishDate}',
+          style: MyStyle.regular10(context),
+        ),
+      ],
     ),
   );
 }

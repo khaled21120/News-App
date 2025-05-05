@@ -1,3 +1,4 @@
+import 'package:news/core/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PrefsService {
@@ -6,7 +7,8 @@ class PrefsService {
   static Future<void> init() async =>
       _instance = await SharedPreferences.getInstance();
 
-  static Future clear() async => await _instance.clear();
-  static Future removeData({required String key}) async =>
-      await _instance.remove(key);
+  static Future setBool({required bool value}) async =>
+      await _instance.setBool(Constants.showOnboarding, value);
+
+  static bool? getBool() => _instance.getBool(Constants.showOnboarding) ?? true;
 }

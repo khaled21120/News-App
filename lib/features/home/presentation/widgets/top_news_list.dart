@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/themes/text_style.dart';
 import '../../data/model/news_model.dart';
@@ -18,7 +19,7 @@ class TopNewsList extends StatelessWidget {
           children: [
             Text('Top News', style: MyStyle.title18(context)),
             TextButton(
-              onPressed: () {},
+              onPressed: () => GoRouter.of(context).pushNamed('all-news'),
               child: Text('See All', style: MyStyle.regular11(context)),
             ),
           ],
